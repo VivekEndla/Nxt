@@ -1,0 +1,1491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIAT Connect AI</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:15px Arial,sans-serif;background:#f4f6fb;color:#182033}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{background:#111827;color:#e5e7eb;padding:22px}
+.brand{font-weight:800;font-size:20px;margin-bottom:28px}
+.brand span{background:#6865e8;padding:10px;border-radius:10px;margin-right:8px}
+.nav button{display:block;width:100%;text-align:left;padding:12px;border:0;background:transparent;color:#cbd5e1;border-radius:9px;margin:4px 0;cursor:pointer}
+.nav button.active,.nav button:hover{background:#283247;color:white}
+.disclaimer{font-size:12px;color:#cbd5e1;background:#1f2937;padding:12px;border-radius:10px;margin-top:35px}
+.main{min-width:0}
+.top{height:65px;background:white;border-bottom:1px solid #e5eaf2;display:flex;justify-content:space-between;align-items:center;padding:0 25px}
+.badge{background:#fff2df;color:#9a4b00;border-radius:20px;padding:7px 10px;font-size:11px;font-weight:700}
+.content{padding:25px;max-width:1400px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.head h1{margin:0 0 5px;font-size:26px}
+.muted{color:#667085;font-size:13px}
+.btn{background:#5b5ce2;color:white;border:0;border-radius:8px;padding:11px 15px;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn.secondary{background:white;border:1px solid #e1e5ed;color:#344054}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card,.panel{background:white;border:1px solid #e5eaf2;border-radius:13px;padding:18px;margin-bottom:17px;box-shadow:0 5px 20px #17203308}
+.statlabel{color:#667085;font-size:13px}
+.stat{font-size:27px;font-weight:800;margin:10px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:grid;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;font-weight:700;color:#475467}
+.field input,.field select,.field textarea{padding:11px;border:1px solid #d8dee9;border-radius:8px;font:inherit;width:100%}
+.field textarea{min-height:80px}
+.notice{background:#fff8e8;color:#8a5100;border:1px solid #f6d99b;padding:10px;border-radius:8px;font-size:12px;margin-bottom:15px}
+.analysis{background:#f8f8ff;border:1px solid #dedeff;padding:14px;border-radius:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result{background:white;border:1px solid #e5eaf2;padding:10px;border-radius:8px}
+.result small{display:block;color:#667085;margin-bottom:5px}
+.match{display:flex;gap:15px;border:1px solid #e5eaf2;padding:14px;border-radius:10px}
+.person{background:#e4e7ff;border-radius:14px;padding:16px;font-size:25px}
+.score{color:#5b5ce2;font-size:24px;font-weight:800}
+.reason{background:#f6f8fb;padding:11px;border-radius:8px;margin-top:10px;font-size:13px;color:#475467}
+.brief{border-left:3px solid #c7d2fe;background:#fafaff;padding:11px;margin:10px 0;border-radius:0 8px 8px 0}
+.brief h4{margin:0 0 7px}
+.brief p,.brief li{font-size:13px;line-height:1.5;color:#475467}
+.progress{height:7px;background:#edf0f5;border-radius:9px;margin:7px 0 16px;overflow:hidden}
+.progress span{display:block;background:#5b5ce2;height:100%}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:11px;border-bottom:1px solid #e5eaf2}
+th{color:#667085;background:#fafbfc}
+.empty{text-align:center;padding:30px;color:#667085}
+.toast{display:none;position:fixed;bottom:20px;right:20px;background:#172033;color:white;padding:12px;border-radius:9px;max-width:90%;z-index:1000}
+.ai-tag{display:inline-block;background:#e8e8ff;color:#4b45c6;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px}
+@media(max-width:800px){
+.app{grid-template-columns:1fr}
+.side{padding:12px}
+.nav{display:grid;grid-template-columns:repeat(5,1fr)}
+.nav button{text-align:center;padding:8px 3px;font-size:11px}
+.disclaimer{display:none}
+.cards{grid-template-columns:1fr 1fr}
+.grid,.form{grid-template-columns:1fr}
+.field.full{grid-column:auto}
+.content{padding:14px}
+.head{display:block}
+.top{padding:0 14px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<aside class="side">
+<div class="brand"><span>N</span>NIAT Connect AI</div>
+<div class="nav">
+<button class="active" data-page="dashboard">▦ Dashboard</button>
+<button data-page="intake">＋ Lead Intake</button>
+<button data-page="match">✦ AI Match</button>
+<button data-page="brief">▤ Conversation Brief</button>
+<button data-page="follow">↗ Follow-up</button>
+</div>
+<div class="disclaimer">
+<b>NIAT Connect AI</b><br>
+Student engagement and ambassador matching prototype.
+</div>
+</aside>
+
+<main class="main">
+<div class="top">
+<span class="muted">Growth Overview / <span id="crumb">Dashboard</span></span>
+<span class="badge" id="connection">CONNECTING...</span>
+</div>
+
+<div class="content">
+
+<section id="dashboard" class="page active">
+<div class="head">
+<div><h1>Growth Dashboard</h1><div class="muted">Student Connect funnel overview</div></div>
+<button class="btn" onclick="go('intake')">＋ Create Lead</button>
+</div>
+
+<div class="notice">
+Dashboard figures show records submitted during this browser session.
+Public access to read private lead records is intentionally disabled.
+</div>
+
+<div class="cards" id="stats"></div>
+
+<div class="grid">
+<div class="panel"><h3>Conversion Funnel</h3><div id="funnel"></div></div>
+<div class="panel"><h3>Growth Insights</h3><div id="insights"></div></div>
+</div>
+
+<div class="panel">
+<h3>Recent Leads</h3>
+<div style="overflow:auto">
+<table>
+<thead>
+<tr>
+<th>Student</th>
+<th>Interest</th>
+<th>Concern</th>
+<th>Ambassador</th>
+<th>Stage</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section id="intake" class="page">
+<div class="head">
+<div><h1>Lead Intake</h1><div class="muted">Capture a prospective student.</div></div>
+</div>
+
+<div class="panel">
+<form id="form" class="form">
+
+<div class="field">
+<label>Student Name *</label>
+<input id="name" required placeholder="Student name">
+</div>
+
+<div class="field">
+<label>Email</label>
+<input id="email" type="email" placeholder="student@example.com">
+</div>
+
+<div class="field">
+<label>Phone</label>
+<input id="phone" type="tel" placeholder="Phone number">
+</div>
+
+<div class="field">
+<label>Preferred Campus / Location</label>
+<select id="campus">
+<option value="">Select</option>
+<option>Hyderabad</option>
+<option>Bengaluru</option>
+<option>Vijayawada</option>
+<option>Chennai</option>
+<option>Coimbatore</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Course / Technology Interest</label>
+<select id="tech">
+<option>AI/ML</option>
+<option>Data Science</option>
+<option>Software Development</option>
+<option>Cybersecurity</option>
+</select>
+</div>
+
+<div class="field">
+<label>Lead Source</label>
+<select id="source">
+<option>Website</option>
+<option>Campus Event</option>
+<option>Social Media</option>
+<option>Referral</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Admission Stage</label>
+<select id="stage">
+<option>Completed counselling – undecided</option>
+<option>Completed NAT</option>
+<option>Exploring options</option>
+<option>Ready to apply</option>
+<option>Parent discussion pending</option>
+</select>
+</div>
+
+<div class="field">
+<label>Biggest Concern</label>
+<select id="concern">
+<option>Career outcomes</option>
+<option>Fees and ROI</option>
+<option>University and degree</option>
+<option>Actual learning experience</option>
+<option>Campus and student life</option>
+<option>Admission process</option>
+</select>
+</div>
+
+<div class="field">
+<label>Preferred Language</label>
+<select id="lang">
+<option>English</option>
+<option>Telugu</option>
+<option>Hindi</option>
+<option>Kannada</option>
+<option>Tamil</option>
+<option>Malayalam</option>
+</select>
+</div>
+
+<div class="field full">
+<label>Additional Question</label>
+<textarea id="question" placeholder="What would you like to ask a current student?"></textarea>
+</div>
+
+<div class="field full">
+<button class="btn" type="submit">Analyse Lead & Find Ambassador →</button>
+</div>
+
+</form>
+</div>
+</section>
+
+<section id="match" class="page">
+<div class="head">
+<div>
+<h1>AI Match</h1>
+<div class="muted">Gemini lead analysis and ambassador recommendation.</div>
+</div>
+<button class="btn secondary" onclick="go('intake')">＋ New Lead</button>
+</div>
+<div id="matchContent" class="empty">Submit a lead to generate analysis and match.</div>
+</section>
+
+<section id="brief" class="page">
+<div class="head">
+<div>
+<h1>Conversation Brief</h1>
+<div class="muted">Personalised 15-minute guide</div>
+</div>
+<button class="btn" onclick="genBrief()">Generate Brief</button>
+</div>
+<div id="briefContent" class="empty">Complete lead analysis and matching first.</div>
+</section>
+
+<section id="follow" class="page">
+<div class="head">
+<div>
+<h1>Post-Conversation Follow-up</h1>
+<div class="muted">Feedback and recommended next step</div>
+</div>
+</div>
+<div id="followContent" class="empty">Complete the conversation first.</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+"use strict";
+
+// 1. SUPABASE CONFIGURATION
+
+const SUPABASE_URL = "https://dyrkzhzrlaplfzzndwza.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_UnEceUPCC1ORSgmbo8_f4w_8oXuvQnI";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+// 2. N8N CONFIGURATION
+
+// TEST URL: Use while the n8n Webhook is listening for a test event.
+// After successful testing, replace this with the Production URL.
+
+const N8N_WEBHOOK_URL =
+  "https://niat-connect-ai.app.n8n.cloud/webhook/niat-new-lead";
+
+let ambassadors = [];
+let leads = [];
+let current = null;
+
+// 3. COMMON HELPERS
+
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.style.display = "block";
+
+  setTimeout(() => {
+    el.style.display = "none";
+  }, 5000);
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+}
+
+function setConnection(message, ok) {
+  const el = document.getElementById("connection");
+
+  el.textContent = message;
+  el.style.background = ok ? "#dcfce7" : "#fff2df";
+  el.style.color = ok ? "#166534" : "#9a4b00";
+}
+
+// 4. LOAD AMBASSADORS FROM SUPABASE
+
+async function loadAmbassadors() {
+  const { data, error } = await db
+    .from("ambassadors")
+    .select("id,name,email,phone,course,year_of_study,interests,skills,bio,availability");
+
+  if (error) throw error;
+
+  ambassadors = (data || []).map(a => ({
+    id: a.id,
+    name: a.name,
+    course: a.course || "",
+    year: a.year_of_study || "",
+    interests: Array.isArray(a.interests) ? a.interests : [],
+    skills: Array.isArray(a.skills) ? a.skills : [],
+    bio: a.bio || "",
+    availability: a.availability || "available"
+  }));
+
+  return ambassadors;
+}
+
+// 5. INITIAL CONNECTION
+
+async function initialize() {
+  try {
+    await loadAmbassadors();
+
+    setConnection("SUPABASE CONNECTED", true);
+    toast("Connected. " + ambassadors.length + " ambassadors loaded.");
+
+  } catch (error) {
+    console.error("Supabase connection error:", error);
+
+    setConnection("DATABASE ERROR", false);
+    toast("Supabase error: " + error.message);
+  }
+}
+
+// 6. N8N WEBHOOK INTEGRATION
+
+async function sendLeadToN8n(lead, analysis, ambassador, leadId) {
+
+  const payload = {
+    event: "new_student_lead",
+    lead_id: leadId,
+    course_interest: lead.courseInterest,
+    location: lead.location || "",
+    source: lead.source,
+    admission_stage: lead.stage,
+    primary_concern: analysis.primary,
+    secondary_concern: analysis.secondary,
+    preferred_language: lead.language,
+    ai_interest_level: analysis.intent,
+    ai_score: analysis.score,
+    ai_summary: analysis.explanation,
+    recommended_action: analysis.action,
+    ambassador_id: ambassador.id,
+    ambassador_name: ambassador.name,
+    timestamp: new Date().toISOString()
+  };
+
+  const response = await fetch(N8N_WEBHOOK_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error("n8n webhook returned HTTP " + response.status);
+  }
+
+  return true;
+}
+
+// 7. NAVIGATION
+
+function go(page) {
+  document.querySelectorAll(".page").forEach(x => {
+    x.classList.toggle("active", x.id === page);
+  });
+
+  document.querySelectorAll(".nav button").forEach(x => {
+    x.classList.toggle("active", x.dataset.page === page);
+  });
+
+  document.getElementById("crumb").textContent =
+    page[0].toUpperCase() + page.slice(1);
+
+  if (page === "dashboard") renderDash();
+  if (page === "match") renderMatch();
+  if (page === "brief") renderBrief();
+  if (page === "follow") renderFollow();
+
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll(".nav button").forEach(button => {
+  button.onclick = () => go(button.dataset.page);
+});
+
+// 8. REAL GEMINI AI ANALYSIS THROUGH SUPABASE EDGE FUNCTION
+
+async function analyseWithGemini(lead) {
+
+  const aiInput = {
+    course_interest: lead.courseInterest,
+    location: lead.location || "",
+    source: lead.source,
+
+    interests: [
+      lead.courseInterest,
+      lead.concern,
+      lead.stage,
+      lead.language
+    ].filter(Boolean),
+
+    student_message: [
+      "Admission stage: " + lead.stage,
+      "Primary concern: " + lead.concern,
+      "Preferred language: " + lead.language,
+      "Student question: " + (lead.question || "No additional question provided.")
+    ].join("\n")
+  };
+
+  const { data, error } = await db.functions.invoke(
+    "ai-analyse-lead",
+    {
+      body: aiInput
+    }
+  );
+
+  if (error) {
+    console.error("Gemini Edge Function error:", error);
+    throw new Error(
+      "Gemini request failed. Check the ai-analyse-lead function and its logs."
+    );
+  }
+
+  if (!data || !data.success || !data.analysis) {
+    console.error("Gemini response error:", data);
+
+    throw new Error(
+      data?.details || data?.error || "Gemini did not return a valid analysis."
+    );
+  }
+
+  const result = data.analysis;
+
+  if (
+    !["High", "Medium", "Low"].includes(result.interest_level) ||
+    !Number.isInteger(result.lead_score) ||
+    result.lead_score < 0 ||
+    result.lead_score > 100
+  ) {
+    throw new Error("Gemini returned invalid analysis data.");
+  }
+
+  return {
+    intent: result.interest_level,
+    primary: result.primary_concern,
+    secondary: result.secondary_concern,
+    interest: lead.courseInterest,
+    language: lead.language,
+    explanation: result.summary,
+    action: result.recommended_action,
+    score: result.lead_score,
+    criteria: Array.isArray(result.suggested_ambassador_criteria)
+      ? result.suggested_ambassador_criteria
+      : [],
+    model: data.model || "Gemini"
+  };
+}
+
+// 9. MATCH AMBASSADOR USING COURSE AND AI SUGGESTED CRITERIA
+
+function matchAmbassador(lead, aiAnalysis) {
+
+  const available = ambassadors.filter(a =>
+    !["unavailable", "inactive", "busy"].includes(
+      String(a.availability).toLowerCase()
+    )
+  );
+
+  if (!available.length) {
+    throw new Error("No available ambassadors found in Supabase.");
+  }
+
+  const criteria = (aiAnalysis.criteria || [])
+    .map(x => String(x).toLowerCase());
+
+  return available.map(a => {
+
+    let score = 0;
+    const reasons = [];
+
+    const interests = a.interests.map(x => String(x).toLowerCase());
+    const skills = a.skills.map(x => String(x).toLowerCase());
+    const bio = String(a.bio || "").toLowerCase();
+    const course = String(a.course || "").toLowerCase();
+
+    const target = lead.courseInterest.toLowerCase();
+
+    if (
+      interests.some(x => x.includes(target) || target.includes(x)) ||
+      skills.some(x => x.includes(target) || target.includes(x))
+    ) {
+      score += 45;
+      reasons.push("Matching course interests");
+    }
+
+    if (course && course.includes(target)) {
+      score += 15;
+      reasons.push("Related course background");
+    }
+
+    const profileText = [
+      ...interests,
+      ...skills,
+      course,
+      bio
+    ].join(" ");
+
+    let criteriaMatches = 0;
+
+    criteria.forEach(item => {
+      const words = item
+        .split(/[^a-z0-9]+/)
+        .filter(word => word.length >= 4);
+
+      if (words.some(word => profileText.includes(word))) {
+        criteriaMatches++;
+      }
+    });
+
+    if (criteriaMatches > 0) {
+      score += Math.min(criteriaMatches * 10, 30);
+      reasons.push("Matches Gemini's suggested criteria");
+    }
+
+    if (a.bio) {
+      score += 10;
+      reasons.push("Student profile available");
+    }
+
+    return {
+      ambassador: a,
+      score: Math.min(score, 100),
+      reasons
+    };
+
+  }).sort((a, b) => b.score - a.score)[0];
+}
+
+// 10. LEAD INTAKE AND REAL AI ANALYSIS
+
+document.getElementById("form").addEventListener(
+  "submit",
+  async function(e) {
+
+    e.preventDefault();
+
+    const form = e.target;
+    const button = form.querySelector('button[type="submit"]');
+
+    button.disabled = true;
+
+    const lead = {
+      name: document.getElementById("name").value.trim(),
+
+      email:
+        document.getElementById("email").value.trim() || null,
+
+      phone:
+        document.getElementById("phone").value.trim() || null,
+
+      location:
+        document.getElementById("campus").value || null,
+
+      courseInterest:
+        document.getElementById("tech").value,
+
+      source:
+        document.getElementById("source").value,
+
+      stage:
+        document.getElementById("stage").value,
+
+      concern:
+        document.getElementById("concern").value,
+
+      language:
+        document.getElementById("lang").value,
+
+      question:
+        document.getElementById("question").value.trim()
+    };
+
+    try {
+
+      if (!ambassadors.length) {
+        button.textContent = "Loading ambassadors...";
+        await loadAmbassadors();
+      }
+
+      // STEP 1: Call the actual Gemini AI model
+      button.textContent = "Gemini AI analysing lead...";
+
+      const analysis = await analyseWithGemini(lead);
+
+      // STEP 2: Match an ambassador using AI criteria
+      button.textContent = "Finding best ambassador...";
+
+      const matched = matchAmbassador(lead, analysis);
+
+      const leadId = crypto.randomUUID();
+
+      // STEP 3: Save actual AI summary and score to Supabase
+      const databaseLead = {
+        id: leadId,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        location: lead.location,
+        course_interest: lead.courseInterest,
+        source: lead.source,
+        status: "matched",
+        ai_summary:
+          analysis.explanation +
+          " Recommended action: " +
+          analysis.action,
+        ai_score: analysis.score
+      };
+
+      button.textContent = "Saving lead to Supabase...";
+
+      const { error } = await db
+        .from("leads")
+        .insert(databaseLead);
+
+      if (error) throw error;
+
+      // STEP 4: Store current session data
+      current = {
+        ...lead,
+        id: leadId,
+        analysis,
+        ambassador: matched.ambassador,
+        score: matched.score,
+        reasons: matched.reasons,
+        status: "Matched",
+        conversationId: null,
+        n8nStatus: "pending"
+      };
+
+      leads.unshift(current);
+
+      // STEP 5: Trigger n8n after Supabase successfully saves the lead.
+      // Failure here does not undo the successful lead submission.
+
+      button.textContent = "Triggering n8n automation...";
+
+      try {
+
+        await sendLeadToN8n(
+          lead,
+          analysis,
+          matched.ambassador,
+          leadId
+        );
+
+        current.n8nStatus = "success";
+
+        console.log("n8n automation triggered successfully.");
+
+      } catch (n8nError) {
+
+        current.n8nStatus = "failed";
+
+        console.error("n8n integration error:", n8nError);
+
+      }
+
+      form.reset();
+
+      saveDash();
+      go("match");
+
+      if (current.n8nStatus === "success") {
+        toast("Lead saved. Gemini analysis completed. n8n automation triggered.");
+      } else {
+        toast("Lead saved and analysed. n8n did not respond; check its webhook and CORS settings.");
+      }
+
+    } catch (error) {
+
+      console.error("Lead submission error:", error);
+
+      toast("Submission failed: " + error.message);
+
+    } finally {
+
+      button.disabled = false;
+      button.textContent = "Analyse Lead & Find Ambassador →";
+
+    }
+  }
+);
+
+// 11. SESSION DASHBOARD
+
+function saveDash() {
+  renderDash();
+}
+
+function renderDash() {
+
+  const total = leads.length;
+
+  const high = leads.filter(
+    x => x.analysis?.intent === "High"
+  ).length;
+
+  const matched = leads.filter(
+    x => x.ambassador
+  ).length;
+
+  const scheduled = leads.filter(
+    x => ["Scheduled", "Completed", "Follow-up"].includes(x.status)
+  ).length;
+
+  const completed = leads.filter(
+    x => ["Completed", "Follow-up"].includes(x.status)
+  ).length;
+
+  const interested = leads.filter(
+    x => x.feedback?.interest === "Interested"
+  ).length;
+
+  const stats = [
+    ["Session Leads", total],
+    ["High Intent", high],
+    ["Ambassador Matches", matched],
+    ["Scheduled", scheduled],
+    ["Completed", completed],
+    ["Interested", interested]
+  ];
+
+  document.getElementById("stats").innerHTML =
+    stats.map(x =>
+      `<div class="card">
+        <div class="statlabel">${esc(x[0])}</div>
+        <div class="stat">${x[1]}</div>
+      </div>`
+    ).join("");
+
+  document.getElementById("funnel").innerHTML = [
+    ["Leads", total],
+    ["Matched", matched],
+    ["Scheduled", scheduled],
+    ["Completed", completed],
+    ["Interested", interested]
+  ].map(x =>
+    `<div>
+      ${x[0]} <b style="float:right">${x[1]}</b>
+      <div class="progress">
+        <span style="width:${total ? x[1] / total * 100 : 0}%"></span>
+      </div>
+    </div>`
+  ).join("");
+
+  document.getElementById("insights").innerHTML = total
+    ? `<div class="reason">${high} high-intent leads recorded in this session.</div>
+       <div class="reason">${completed} conversations completed in this session.</div>
+       <div class="reason">${interested} students marked interested.</div>`
+    : '<div class="empty">Submit your first lead to generate insights.</div>';
+
+  document.getElementById("table").innerHTML =
+    leads.map((l, i) =>
+      `<tr>
+        <td>${esc(l.name)}<br><small>${esc(l.location)}</small></td>
+        <td>${esc(l.courseInterest)}</td>
+        <td>${esc(l.analysis?.primary)}</td>
+        <td>${esc(l.ambassador?.name || "—")}</td>
+        <td>${esc(l.status)}</td>
+        <td><button class="btn secondary" onclick="openLead(${i})">View</button></td>
+      </tr>`
+    ).join("") ||
+    '<tr><td colspan="6" class="empty">No leads yet.</td></tr>';
+}
+
+function openLead(index) {
+  current = leads[index];
+  go("match");
+}
+
+// 12. AI MATCH DISPLAY
+
+function renderMatch() {
+
+  const el = document.getElementById("matchContent");
+
+  if (!current) {
+    el.innerHTML =
+      '<div class="empty">Submit a lead to generate AI analysis and matching.</div>';
+    return;
+  }
+
+  const a = current.ambassador;
+  const x = current.analysis;
+
+  el.innerHTML = `
+  <div class="grid">
+
+    <div class="panel">
+
+      <h3>Student Lead Analysis</h3>
+
+      <div class="ai-tag">✦ REAL GEMINI AI ANALYSIS</div>
+
+      <div class="analysis">
+
+        <div class="two">
+
+          <div class="result">
+            <small>Interest Level</small>
+            <b>${esc(x.intent)}</b>
+          </div>
+
+          <div class="result">
+            <small>AI Lead Score</small>
+            <b>${esc(x.score)}/100</b>
+          </div>
+
+          <div class="result">
+            <small>Primary Concern</small>
+            <b>${esc(x.primary)}</b>
+          </div>
+
+          <div class="result">
+            <small>Course Interest</small>
+            <b>${esc(x.interest)}</b>
+          </div>
+
+          <div class="result">
+            <small>Secondary Concern</small>
+            <b>${esc(x.secondary)}</b>
+          </div>
+
+          <div class="result">
+            <small>Preferred Language</small>
+            <b>${esc(x.language)}</b>
+          </div>
+
+        </div>
+
+        <div class="reason">
+          <b>AI Summary:</b><br>
+          ${esc(x.explanation)}
+        </div>
+
+        <div class="reason">
+          <b>Recommended Next Action:</b><br>
+          ${esc(x.action)}
+        </div>
+
+        <div class="reason">
+          <b>Suggested Ambassador Criteria:</b>
+          <ul>
+            ${(x.criteria || []).map(c => `<li>${esc(c)}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="muted">
+          AI Model: ${esc(x.model)}
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Recommended Ambassador</h3>
+
+      <div class="match">
+
+        <div class="person">🎓</div>
+
+        <div>
+
+          <b>${esc(a.name)}</b>
+
+          <p class="muted">
+            ${esc(a.course)} · ${esc(a.year)}
+          </p>
+
+          <p class="muted">
+            Interests: ${esc(a.interests.join(", "))}
+          </p>
+
+          <div class="score">
+            ${current.score}% match
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="reason">
+
+        <b>Why matched:</b>
+        ${esc(current.reasons.join(", ") || "Best available profile match")}
+
+        <br><br>
+
+        <b>Profile:</b>
+        ${esc(a.bio)}
+
+        <br><br>
+
+        <b>Skills:</b>
+        ${esc(a.skills.join(", "))}
+
+      </div>
+
+      <div class="reason">
+        <b>n8n Automation:</b>
+        ${current.n8nStatus === "success"
+          ? "Webhook successfully triggered."
+          : "Webhook not confirmed. Check n8n execution history."}
+      </div>
+
+      <button class="btn" style="margin-top:12px"
+        onclick="go('brief')">
+        Generate Conversation Brief →
+      </button>
+
+    </div>
+
+  </div>`;
+}
+
+// 13. CONVERSATION BRIEF
+
+function buildBrief() {
+
+  const l = current;
+  const a = l.ambassador;
+
+  return {
+
+    opening:
+      `Hi ${l.name}, I'm ${a.name}. I can share my student experience and what I have learned about ${l.courseInterest}. Feel free to ask questions.`,
+
+    questions: [
+      `What would you like to know about ${l.courseInterest}?`,
+      "What are you expecting from a student experience?",
+      `What is your biggest concern about ${l.analysis.primary}?`,
+      "What information would help you make a decision?",
+      "Would you like to discuss any other questions?"
+    ],
+
+    topics: [
+      "Student learning experience",
+      "Projects and practical skills",
+      "Campus experience",
+      "Student community",
+      "Next steps"
+    ],
+
+    avoid: [
+      "Guaranteed placement claims",
+      "Unverified fee or scholarship claims",
+      "Presenting personal opinions as official facts"
+    ],
+
+    flow: [
+      "0–3 min: Introductions",
+      "3–8 min: Learning and projects",
+      "8–12 min: Questions",
+      "12–15 min: Next steps"
+    ]
+  };
+}
+
+// 14. CREATE CONVERSATION THROUGH HYPER-ACTION EDGE FUNCTION
+
+async function genBrief() {
+
+  if (!current) {
+    toast("Submit a lead first.");
+    return;
+  }
+
+  if (current.conversationId) {
+    showBrief(current.brief || buildBrief());
+    toast("This conversation has already been saved.");
+    return;
+  }
+
+  const button = document.querySelector("#brief .head .btn");
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Saving conversation...";
+  }
+
+  try {
+
+    current.brief = buildBrief();
+
+    const { data, error } = await db.functions.invoke(
+      "hyper-action",
+      {
+        body: {
+          lead_id: current.id,
+          ambassador_id: current.ambassador.id
+        }
+      }
+    );
+
+    if (error) {
+      throw new Error(error.message || "Edge Function request failed.");
+    }
+
+    if (!data || !data.success || !data.conversation_id) {
+      throw new Error(data?.error || "Conversation could not be saved.");
+    }
+
+    current.conversationId = data.conversation_id;
+    current.status = "Scheduled";
+
+    saveDash();
+    showBrief(current.brief);
+
+    toast("Conversation successfully saved through Supabase.");
+
+  } catch (error) {
+
+    console.error("Conversation creation error:", error);
+
+    toast("Conversation could not be saved: " + error.message);
+
+  } finally {
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Generate Brief";
+    }
+
+  }
+}
+
+function renderBrief() {
+
+  const el = document.getElementById("briefContent");
+
+  if (!current) {
+    el.innerHTML =
+      '<div class="empty">Complete lead matching first.</div>';
+    return;
+  }
+
+  if (current.brief) {
+    showBrief(current.brief);
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="panel">
+      <h3>Prepare ${esc(current.name)}'s conversation</h3>
+      <p class="muted">
+        Matched ambassador: ${esc(current.ambassador.name)}
+      </p>
+      <button class="btn" onclick="genBrief()">
+        Generate Brief & Save Conversation
+      </button>
+    </div>
+  `;
+}
+
+function showBrief(b) {
+
+  document.getElementById("briefContent").innerHTML = `
+
+  <div class="panel">
+
+    <h3>15-Minute Student Connect Brief</h3>
+
+    <p class="muted">
+      ${esc(current.name)} ↔ ${esc(current.ambassador.name)}
+    </p>
+
+    <div class="brief">
+      <h4>Primary Concern</h4>
+      ${esc(current.analysis.primary)}
+    </div>
+
+    <div class="brief">
+      <h4>Opening</h4>
+      <p>${esc(b.opening)}</p>
+    </div>
+
+    <div class="brief">
+      <h4>Questions</h4>
+      <ol>
+        ${b.questions.map(x => `<li>${esc(x)}</li>`).join("")}
+      </ol>
+    </div>
+
+    <div class="brief">
+      <h4>Topics</h4>
+      <ul>
+        ${b.topics.map(x => `<li>${esc(x)}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="brief">
+      <h4>Avoid</h4>
+      <ul>
+        ${b.avoid.map(x => `<li>${esc(x)}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="brief">
+      <h4>Conversation Flow</h4>
+      <ul>
+        ${b.flow.map(x => `<li>${esc(x)}</li>`).join("")}
+      </ul>
+    </div>
+
+    <button class="btn" onclick="completeConversation()">
+      ✓ Mark Conversation Completed
+    </button>
+
+  </div>`;
+}
+
+// 15. COMPLETE CONVERSATION THROUGH EDGE FUNCTION
+
+async function completeConversation() {
+
+  if (!current?.conversationId) {
+    toast("No saved conversation was found.");
+    return;
+  }
+
+  const button = document.querySelector("#briefContent .btn");
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Updating...";
+  }
+
+  try {
+
+    const { data, error } = await db.functions.invoke(
+      "complete-conversation",
+      {
+        body: {
+          conversation_id: current.conversationId
+        }
+      }
+    );
+
+    if (error) {
+      throw new Error(error.message || "Edge Function request failed.");
+    }
+
+    if (!data?.success) {
+      throw new Error(
+        data?.error || "Conversation could not be completed."
+      );
+    }
+
+    current.status = "Completed";
+
+    saveDash();
+    go("follow");
+
+    toast("Conversation completed and saved.");
+
+  } catch (error) {
+
+    console.error("Conversation completion error:", error);
+
+    toast("Could not update conversation: " + error.message);
+
+  } finally {
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = "✓ Mark Conversation Completed";
+    }
+
+  }
+}
+
+// 16. FOLLOW-UP
+
+function renderFollow() {
+
+  const el = document.getElementById("followContent");
+
+  if (!current) {
+    el.innerHTML =
+      '<div class="empty">Complete a conversation first.</div>';
+    return;
+  }
+
+  if (current.follow) {
+    showFollow(current.follow);
+    return;
+  }
+
+  if (current.status !== "Completed") {
+    el.innerHTML = `
+      <div class="panel">
+        Complete the conversation first.
+        <br>
+        <button class="btn" onclick="go('brief')">
+          Go to Brief
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  el.innerHTML = `
+
+  <div class="panel">
+
+    <h3>Conversation Feedback</h3>
+
+    <form id="feedback" class="form">
+
+      <div class="field">
+        <label>Did the conversation help?</label>
+        <select id="help">
+          <option>Yes</option>
+          <option>Somewhat</option>
+          <option>No</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Student Interest</label>
+        <select id="interest">
+          <option>Interested</option>
+          <option>Unsure</option>
+          <option>Not interested</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Admission Readiness</label>
+        <select id="ready">
+          <option>Ready to proceed</option>
+          <option>Needs parent discussion</option>
+          <option>Needs more information</option>
+          <option>Not ready</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Remaining Concern</label>
+        <select id="remaining">
+          <option>None</option>
+          <option>Fees and ROI</option>
+          <option>Career outcomes</option>
+          <option>University and degree</option>
+          <option>Learning experience</option>
+          <option>Admission process</option>
+          <option>Parent approval</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <button class="btn" type="submit">
+          Generate & Save Follow-up →
+        </button>
+      </div>
+
+    </form>
+
+  </div>`;
+
+  document.getElementById("feedback").addEventListener(
+    "submit",
+    saveFollow
+  );
+}
+
+// 17. SAVE FOLLOW-UP THROUGH EDGE FUNCTION
+
+async function saveFollow(e) {
+
+  e.preventDefault();
+
+  if (!current?.id || !current?.conversationId) {
+    toast("A saved lead and conversation are required before creating a follow-up.");
+    return;
+  }
+
+  const form = e.target;
+  const button = form.querySelector('button[type="submit"]');
+
+  const feedback = {
+    help: document.getElementById("help").value,
+    interest: document.getElementById("interest").value,
+    readiness: document.getElementById("ready").value,
+    remaining: document.getElementById("remaining").value
+  };
+
+  const message = `Hi ${current.name}, thanks for connecting with ${current.ambassador.name}. ${
+    feedback.help === "Yes"
+      ? "We are glad the conversation helped."
+      : "We understand you may still have questions."
+  } ${
+    feedback.interest === "Interested"
+      ? "Your next step is to review your programme and admission requirements with the counselling team."
+      : feedback.interest === "Unsure"
+      ? "We can help clarify your remaining concern about " + feedback.remaining + "."
+      : "Thank you for considering the programme."
+  }`;
+
+  const action = feedback.interest === "Interested"
+    ? "Counsellor follow-up within 24 hours"
+    : feedback.interest === "Unsure"
+    ? "Send relevant information and follow up in 48 hours"
+    : "No immediate follow-up";
+
+  const dueAt = feedback.interest === "Interested"
+    ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    : feedback.interest === "Unsure"
+    ? new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
+    : null;
+
+  button.disabled = true;
+  button.textContent = "Saving follow-up...";
+
+  try {
+
+    const { data, error } = await db.functions.invoke(
+      "save-followup",
+      {
+        body: {
+          lead_id: current.id,
+          conversation_id: current.conversationId,
+          message: message,
+          due_at: dueAt,
+          status: "pending"
+        }
+      }
+    );
+
+    if (error) {
+      throw new Error(
+        error.message || "Follow-up Edge Function request failed."
+      );
+    }
+
+    if (!data || !data.success || !data.followup_id) {
+      throw new Error(data?.error || "Follow-up could not be saved.");
+    }
+
+    current.feedback = feedback;
+
+    current.follow = {
+      message,
+      action,
+      classification: feedback.interest,
+      followupId: data.followup_id
+    };
+
+    current.status = "Follow-up";
+
+    saveDash();
+    showFollow(current.follow);
+
+    toast("Follow-up successfully saved to Supabase.");
+
+  } catch (error) {
+
+    console.error("Follow-up save error:", error);
+
+    toast("Follow-up save failed: " + error.message);
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Generate & Save Follow-up →";
+
+  }
+}
+
+function showFollow(f) {
+
+  document.getElementById("followContent").innerHTML = `
+
+  <div class="grid">
+
+    <div class="panel">
+
+      <h3>Follow-up Message</h3>
+
+      <p>${esc(f.message)}</p>
+
+      <button class="btn secondary" onclick="copyMessage()">
+        Copy Message
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <h3>Recommended Next Action</h3>
+
+      <div class="result">
+        <b>${esc(f.action)}</b>
+      </div>
+
+      <div class="result" style="margin-top:10px">
+        <small>Classification</small>
+        <b>${esc(f.classification)}</b>
+      </div>
+
+    </div>
+
+  </div>`;
+}
+
+function copyMessage() {
+
+  navigator.clipboard.writeText(current.follow.message)
+    .then(() => toast("Message copied."))
+    .catch(() => toast("Copy failed."));
+}
+
+// 18. START APPLICATION
+
+renderDash();
+initialize();
+
+</script>
+</body>
+</html>
